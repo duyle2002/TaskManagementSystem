@@ -60,6 +60,8 @@ task-management-system/
 │   │   │       ├── TaskManagementSystemApplication.java
 │   │   │       ├── config/           # Configuration classes
 │   │   │       ├── controller/       # REST endpoints
+│   │   │       ├── exception/        # Custom exceptions and handlers
+│   │   │       ├── mapper/           # Mappers for DTOs and entities
 │   │   │       ├── model/
 │   │   │       │   ├── common/       # BaseEntity and shared models
 │   │   │       │   ├── entity/       # JPA entity classes
@@ -270,26 +272,24 @@ java -jar target/task-management-system-0.0.1-SNAPSHOT.jar
 http://localhost:8080/api
 ```
 
+### Swagger UI & OpenAPI
+
+The API documentation is automatically generated and available at:
+
+- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+- **OpenAPI Specification**: `http://localhost:8080/v3/api-docs`
+- **OpenAPI JSON**: `http://localhost:8080/v3/api-docs.json`
+
+The Swagger UI provides an interactive interface to:
+- View all available endpoints
+- Test API requests directly
+- See request/response schemas
+- Review authentication requirements
+- Explore error responses
+
 ### Authentication
 
 The API uses Spring Security. Include authentication headers in your requests.
-
-### Example Endpoints
-
-(Add your specific endpoints here as you develop them)
-
-```
-GET    /api/tasks              - Get all tasks
-POST   /api/tasks              - Create a new task
-GET    /api/tasks/{id}         - Get a specific task
-PUT    /api/tasks/{id}         - Update a task
-DELETE /api/tasks/{id}         - Delete a task
-
-GET    /api/users              - Get all users
-POST   /api/users              - Create a new user
-GET    /api/users/{id}         - Get a specific user
-PUT    /api/users/{id}         - Update a user
-```
 
 ## 🏗️ Architecture
 
@@ -434,7 +434,7 @@ This project is part of a personal learning initiative.
 
 ## 👨‍💻 Author
 
-**Duy Pham**
+**Duy Le**
 
 ## 📞 Support
 
