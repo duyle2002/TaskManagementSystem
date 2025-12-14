@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * - Secure error messages (no internal details in production)
  * - Detailed logging for debugging
  */
-@Slf4j
+@Slf4j(topic = "GLOBAL_EXCEPTION_HANDLER")
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

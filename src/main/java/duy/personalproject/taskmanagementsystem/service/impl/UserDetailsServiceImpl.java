@@ -1,10 +1,10 @@
 package duy.personalproject.taskmanagementsystem.service.impl;
 
-import duy.personalproject.taskmanagementsystem.exception.UnauthorizedException;
 import duy.personalproject.taskmanagementsystem.model.entity.UserEntity;
-import duy.personalproject.taskmanagementsystem.repository.IUserRepository;
+import duy.personalproject.taskmanagementsystem.repository.UserRepository;
 import duy.personalproject.taskmanagementsystem.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,8 +12,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j(topic = "USER_DETAILS_SERVICE")
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private final IUserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

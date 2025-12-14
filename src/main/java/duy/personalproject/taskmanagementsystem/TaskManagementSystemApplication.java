@@ -1,15 +1,18 @@
 package duy.personalproject.taskmanagementsystem;
 
 import duy.personalproject.taskmanagementsystem.config.properties.JwtConfigProperties;
+import duy.personalproject.taskmanagementsystem.config.properties.RefreshTokenConfigProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
-@EnableConfigurationProperties({JwtConfigProperties.class})
 @SpringBootApplication
+@EnableConfigurationProperties({JwtConfigProperties.class, RefreshTokenConfigProperties.class})
+@EnableScheduling
 public class TaskManagementSystemApplication {
 
     public static void main(String[] args) {
