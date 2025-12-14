@@ -1,9 +1,9 @@
 package duy.personalproject.taskmanagementsystem.model.entity;
 
 import duy.personalproject.taskmanagementsystem.model.common.BaseEntity;
-import duy.personalproject.taskmanagementsystem.model.enums.Role;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import duy.personalproject.taskmanagementsystem.model.enums.UserRole;
+import duy.personalproject.taskmanagementsystem.model.enums.UserStatus;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Table(name = "users")
@@ -14,9 +14,23 @@ import lombok.*;
 @Setter
 @Builder
 public class UserEntity extends BaseEntity {
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
+
+    @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
+
+    @Column(name = "full_name", nullable = false)
     private String fullName;
-    private Role role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private UserRole role = UserRole.ROLE_USER;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private UserStatus userStatus = UserStatus.ACTIVE;
 }
