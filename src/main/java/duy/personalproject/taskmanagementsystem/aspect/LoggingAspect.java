@@ -101,13 +101,9 @@ public class LoggingAspect {
      * Builds the log message based on annotation configuration.
      */
     private String buildLogMessage(String className, String methodName, long executionTime) {
-        StringBuilder message = new StringBuilder();
-        message.append("[").append(className).append("] ")
-               .append(methodName).append("()");
-
-        message.append(" executed in ").append(executionTime).append("ms");
-
-        return message.toString();
+        return "[" + className + "] " +
+                methodName + "()" +
+                " executed in " + executionTime + "ms";
     }
 }
 
