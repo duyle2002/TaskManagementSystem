@@ -43,7 +43,7 @@ public class AuthController {
                     description = "User already exists with the provided email or username"
             )
     })
-    @PostMapping("/registerAccount")
+    @PostMapping("/register")
     public ResponseEntity<ApiResponse<Void>> registerAccount(@Valid @RequestBody RegisterAccountRequest registerAccountRequest) {
         log.info("Received request to register account for user {}", registerAccountRequest.getUsername());
         authService.registerAccount(registerAccountRequest);

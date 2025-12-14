@@ -108,7 +108,7 @@
             <version>2.8.5</version>
         </dependency>
 
-        <!--- Json Web Token -->
+        <!-- Json Web Token -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
