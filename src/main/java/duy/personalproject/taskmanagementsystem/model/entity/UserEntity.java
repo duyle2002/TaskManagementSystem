@@ -6,6 +6,8 @@ import duy.personalproject.taskmanagementsystem.model.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Set;
+
 @Table(name = "users")
 @Entity
 @AllArgsConstructor
@@ -35,4 +37,7 @@ public class UserEntity extends BaseEntity {
     @Column(name = "status", nullable = false)
     @Builder.Default
     private UserStatus userStatus = UserStatus.ACTIVE;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<RefreshTokenEntity> refreshTokens;
 }

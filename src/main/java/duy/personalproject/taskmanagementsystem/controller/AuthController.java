@@ -1,7 +1,9 @@
 package duy.personalproject.taskmanagementsystem.controller;
 
+import duy.personalproject.taskmanagementsystem.annotation.LogExecutionTime;
 import duy.personalproject.taskmanagementsystem.model.common.ApiResponse;
 import duy.personalproject.taskmanagementsystem.model.request.auth.LoginRequest;
+import duy.personalproject.taskmanagementsystem.model.request.auth.RefreshTokenRequest;
 import duy.personalproject.taskmanagementsystem.model.request.auth.RegisterAccountRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "Authentication", description = "APIs for user authentication and registration")
 @Slf4j(topic = "AUTH_CONTROLLER")
+@LogExecutionTime
 public class AuthController {
     private final AuthService authService;
 
@@ -70,6 +73,27 @@ public class AuthController {
     public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest loginRequest) {
         log.info("Received request to login for user {}", loginRequest.getUsername());
         LoginResponse loginResponse = authService.login(loginRequest);
+        return ResponseEntity.ok(ApiResponse.ok(loginResponse));
+    }
+
+    @Operation(
+            summary = "Refresh JWT token",
+            description = "Generates a new JWT token using a valid refresh token."
+    )
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "Token refreshed successfully"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid or expired refresh token"
+            )
+    })
+    @PostMapping("/refresh-token")
+    public ResponseEntity<ApiResponse<LoginResponse>> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
+        log.info("Received request to refresh token");
+        LoginResponse loginResponse = authService.refreshToken(refreshTokenRequest);
         return ResponseEntity.ok(ApiResponse.ok(loginResponse));
     }
 }
