@@ -3,11 +3,9 @@ package duy.personalproject.taskmanagementsystem.controller;
 import duy.personalproject.taskmanagementsystem.model.common.ApiResponse;
 import duy.personalproject.taskmanagementsystem.model.request.auth.LoginRequest;
 import duy.personalproject.taskmanagementsystem.model.request.auth.RegisterAccountRequest;
-import duy.personalproject.taskmanagementsystem.service.auth.IAuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.tags.Tags;
 import duy.personalproject.taskmanagementsystem.model.response.auth.LoginResponse;
 import duy.personalproject.taskmanagementsystem.service.AuthService;
 import jakarta.validation.Valid;
@@ -54,6 +52,20 @@ public class AuthController {
         );
     }
 
+    @Operation(
+            summary = "User login",
+            description = "Authenticates a user and returns a JWT token upon successful login."
+    )
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "Login successful"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "401",
+                    description = "Invalid username or password"
+            )
+    })
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest loginRequest) {
         log.info("Received request to login for user {}", loginRequest.getUsername());

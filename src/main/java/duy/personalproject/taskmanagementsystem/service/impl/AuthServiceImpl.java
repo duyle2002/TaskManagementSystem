@@ -10,10 +10,14 @@ import duy.personalproject.taskmanagementsystem.model.request.auth.LoginRequest;
 import duy.personalproject.taskmanagementsystem.model.request.auth.RegisterAccountRequest;
 import duy.personalproject.taskmanagementsystem.model.response.auth.LoginResponse;
 import duy.personalproject.taskmanagementsystem.repository.IUserRepository;
+import duy.personalproject.taskmanagementsystem.security.CustomUserDetails;
 import duy.personalproject.taskmanagementsystem.service.AuthService;
 import duy.personalproject.taskmanagementsystem.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +31,7 @@ public class AuthServiceImpl implements AuthService {
     private final IUserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     @Override
     public void registerAccount(RegisterAccountRequest registerAccountRequest) {
@@ -51,18 +56,16 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
-        UserEntity userEntity = userRepository.findByUsername(loginRequest.getUsername())
-                .orElseThrow(() -> {
-                    log.error("User with username {} not found", loginRequest.getUsername());
-                    return new UnauthorizedException("Invalid username or password");
-                });
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getUsername(),
+                        loginRequest.getPassword()
+                )
+        );
 
-        boolean isPasswordValid = checkPassword(loginRequest.getPassword(), userEntity.getPassword());
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        if (!isPasswordValid) {
-            log.error("Invalid password for user {}", loginRequest.getUsername());
-            throw new UnauthorizedException("Invalid username or password");
-        }
+        UserEntity userEntity = customUserDetails.getUserEntity();
 
         String accessToken = jwtService.generateAccessToken(userEntity);
         String refreshToken = jwtService.generateRefreshToken(userEntity);
@@ -72,9 +75,5 @@ public class AuthServiceImpl implements AuthService {
                 .refreshToken(refreshToken)
                 .expiresIn(Instant.now().getEpochSecond())
                 .build();
-    }
-
-    private boolean checkPassword(String rawPassword, String encodedPassword) {
-        return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 }
