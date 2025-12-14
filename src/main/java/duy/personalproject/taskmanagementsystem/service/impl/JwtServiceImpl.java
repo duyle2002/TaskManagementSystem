@@ -2,6 +2,7 @@ package duy.personalproject.taskmanagementsystem.service.impl;
 
 import duy.personalproject.taskmanagementsystem.config.properties.JwtConfigProperties;
 import duy.personalproject.taskmanagementsystem.model.entity.UserEntity;
+import duy.personalproject.taskmanagementsystem.model.response.auth.TokenInfo;
 import duy.personalproject.taskmanagementsystem.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -32,12 +33,12 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String generateAccessToken(UserEntity user) {
+    public TokenInfo generateAccessToken(UserEntity user) {
         return buildToken(user, jwtConfigProperties.getAccessTokenExpirationInSecond());
     }
 
     @Override
-    public String generateRefreshToken(UserEntity user) {
+    public TokenInfo generateRefreshToken(UserEntity user) {
         return buildToken(user, jwtConfigProperties.getRefreshTokenExpirationInSecond());
     }
 
@@ -73,17 +74,20 @@ public class JwtServiceImpl implements JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    private String buildToken(UserEntity userEntity, long expirationInSecond) {
+    private TokenInfo buildToken(UserEntity userEntity, long expirationInSecond) {
         Instant now = Instant.now();
+        Instant expirationTime = now.plusSeconds(expirationInSecond);
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .subject(userEntity.getUsername())
                 .claim("userId", userEntity.getId())
                 .claim("email", userEntity.getEmail())
                 .claim("role", userEntity.getRole().name())
                 .issuedAt(Date.from(now))
-                .expiration(Date.from(now.plusSeconds(expirationInSecond)))
+                .expiration(Date.from(expirationTime))
                 .signWith(signingKey)
                 .compact();
+
+        return new TokenInfo(token, expirationTime.getEpochSecond());
     }
 }

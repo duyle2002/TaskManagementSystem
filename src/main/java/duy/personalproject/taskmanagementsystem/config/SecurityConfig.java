@@ -27,7 +27,7 @@ public class SecurityConfig {
         "/api/v1/auth/**",
         "/swagger-ui.html",
         "/swagger-ui/**",
-        "/v3/api-docs/**"
+        "/api-docs/**"
     };
 
     private final UserDetailsService userDetailsService;

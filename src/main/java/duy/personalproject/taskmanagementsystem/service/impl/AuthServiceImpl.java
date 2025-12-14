@@ -9,6 +9,7 @@ import duy.personalproject.taskmanagementsystem.model.enums.UserStatus;
 import duy.personalproject.taskmanagementsystem.model.request.auth.LoginRequest;
 import duy.personalproject.taskmanagementsystem.model.request.auth.RegisterAccountRequest;
 import duy.personalproject.taskmanagementsystem.model.response.auth.LoginResponse;
+import duy.personalproject.taskmanagementsystem.model.response.auth.TokenInfo;
 import duy.personalproject.taskmanagementsystem.repository.IUserRepository;
 import duy.personalproject.taskmanagementsystem.security.CustomUserDetails;
 import duy.personalproject.taskmanagementsystem.service.AuthService;
@@ -67,13 +68,14 @@ public class AuthServiceImpl implements AuthService {
 
         UserEntity userEntity = customUserDetails.getUserEntity();
 
-        String accessToken = jwtService.generateAccessToken(userEntity);
-        String refreshToken = jwtService.generateRefreshToken(userEntity);
+        TokenInfo accessToken = jwtService.generateAccessToken(userEntity);
+        TokenInfo refreshToken = jwtService.generateRefreshToken(userEntity);
 
         return LoginResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .expiresIn(Instant.now().getEpochSecond())
+                .tokenType("Bearer")
+                .accessToken(accessToken.getToken())
+                .refreshToken(refreshToken.getToken())
+                .expiresAt(accessToken.getExpiresAt())
                 .build();
     }
 }
