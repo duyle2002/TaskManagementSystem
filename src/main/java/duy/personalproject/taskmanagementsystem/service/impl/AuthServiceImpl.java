@@ -50,8 +50,6 @@ public class AuthServiceImpl implements AuthService {
 
         UserEntity userEntity = userMapper.toUserEntity(registerAccountRequest);
         userEntity.setPassword(passwordEncoder.encode(registerAccountRequest.getPassword()));
-        userEntity.setRole(UserRole.ROLE_USER);
-        userEntity.setUserStatus(UserStatus.ACTIVE);
         userRepository.save(userEntity);
     }
 
@@ -72,7 +70,6 @@ public class AuthServiceImpl implements AuthService {
         TokenInfo refreshToken = jwtService.generateRefreshToken(userEntity);
 
         return LoginResponse.builder()
-                .tokenType("Bearer")
                 .accessToken(accessToken.getToken())
                 .refreshToken(refreshToken.getToken())
                 .expiresAt(accessToken.getExpiresAt())
