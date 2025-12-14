@@ -1,12 +1,15 @@
 package duy.personalproject.taskmanagementsystem.controller;
 
 import duy.personalproject.taskmanagementsystem.model.common.ApiResponse;
+import duy.personalproject.taskmanagementsystem.model.request.auth.LoginRequest;
 import duy.personalproject.taskmanagementsystem.model.request.auth.RegisterAccountRequest;
 import duy.personalproject.taskmanagementsystem.service.auth.IAuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
+import duy.personalproject.taskmanagementsystem.model.response.auth.LoginResponse;
+import duy.personalproject.taskmanagementsystem.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/api/v1/auth")
 @RequiredArgsConstructor
-@Slf4j
 @Tag(name = "Authentication", description = "APIs for user authentication and registration")
+@Slf4j(topic = "AUTH_CONTROLLER")
 public class AuthController {
-    private final IAuthService authService;
+    private final AuthService authService;
 
     @Operation(
             summary = "Register a new user account",
@@ -42,12 +45,19 @@ public class AuthController {
                     description = "User already exists with the provided email or username"
             )
     })
-    @PostMapping("/register")
+    @PostMapping("/registerAccount")
     public ResponseEntity<ApiResponse<Void>> registerAccount(@Valid @RequestBody RegisterAccountRequest registerAccountRequest) {
         log.info("Received request to register account for user {}", registerAccountRequest.getUsername());
         authService.registerAccount(registerAccountRequest);
         return ResponseEntity.ok(
                 ApiResponse.okWithMessage("Account registered successfully")
         );
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest loginRequest) {
+        log.info("Received request to login for user {}", loginRequest.getUsername());
+        LoginResponse loginResponse = authService.login(loginRequest);
+        return ResponseEntity.ok(ApiResponse.ok(loginResponse));
     }
 }

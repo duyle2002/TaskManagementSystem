@@ -21,6 +21,7 @@ public class RegisterAccountRequest {
     private String password;
 
     @Email
+    @NotNull
     private String email;
 
     @NotBlank
