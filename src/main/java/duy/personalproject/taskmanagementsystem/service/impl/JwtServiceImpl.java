@@ -26,32 +26,19 @@ public class JwtServiceImpl implements JwtService {
     private SecretKey signingKey;
 
     @PostConstruct
-    private void init() {
+    public void init() {
         byte[] keyBytes = Decoders.BASE64.decode(jwtConfigProperties.getSecretKey());
         this.signingKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
     @Override
     public String generateAccessToken(UserEntity user) {
-        return buildToken(user, jwtConfigProperties.getAccessTokenExpiration());
+        return buildToken(user, jwtConfigProperties.getAccessTokenExpirationInSecond());
     }
 
     @Override
     public String generateRefreshToken(UserEntity user) {
-        return buildToken(user, jwtConfigProperties.getRefreshTokenExpiration());
-    }
-
-    private String buildToken(UserEntity user, long expirationMs) {
-        Instant now = Instant.now();
-        return Jwts.builder()
-                .subject(user.getUsername())
-                .claim("role", user.getRole().name())
-                .claim("userId", user.getId().toString())
-                .claim("email", user.getEmail())
-                .issuedAt(Date.from(now))
-                .expiration(Date.from(now.plusMillis(expirationMs)))
-                .signWith(signingKey)
-                .compact();
+        return buildToken(user, jwtConfigProperties.getRefreshTokenExpirationInSecond());
     }
 
     @Override
@@ -59,12 +46,10 @@ public class JwtServiceImpl implements JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
-
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        return claimsResolver.apply(extractAllClaims(token));
+    @Override
+    public boolean validateToken(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return userDetails.getUsername().equals(username) && !isTokenExpired(token);
     }
 
     private Claims extractAllClaims(String token) {
@@ -75,13 +60,30 @@ public class JwtServiceImpl implements JwtService {
                 .getPayload();
     }
 
-    public boolean isTokenExpired(String token) {
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Date extractExpiration(String token) {
+        return extractAllClaims(token).getExpiration();
+    }
+
+    private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    @Override
-    public boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    private String buildToken(UserEntity userEntity, long expirationInSecond) {
+        Instant now = Instant.now();
+
+        return Jwts.builder()
+                .subject(userEntity.getUsername())
+                .claim("userId", userEntity.getId())
+                .claim("email", userEntity.getEmail())
+                .claim("role", userEntity.getRole().name())
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(now.plusSeconds(expirationInSecond)))
+                .signWith(signingKey)
+                .compact();
     }
 }
