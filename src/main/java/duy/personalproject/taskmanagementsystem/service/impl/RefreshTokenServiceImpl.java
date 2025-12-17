@@ -1,6 +1,5 @@
 package duy.personalproject.taskmanagementsystem.service.impl;
 
-import duy.personalproject.taskmanagementsystem.annotation.LogExecutionTime;
 import duy.personalproject.taskmanagementsystem.config.properties.RefreshTokenConfigProperties;
 import duy.personalproject.taskmanagementsystem.exception.UnauthorizedException;
 import duy.personalproject.taskmanagementsystem.model.entity.RefreshTokenEntity;
@@ -9,6 +8,7 @@ import duy.personalproject.taskmanagementsystem.model.response.auth.TokenInfo;
 import duy.personalproject.taskmanagementsystem.repository.RefreshTokenRepository;
 import duy.personalproject.taskmanagementsystem.service.JwtService;
 import duy.personalproject.taskmanagementsystem.service.RefreshTokenService;
+import duy.personalproject.taskmanagementsystem.util.TokenHashUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +31,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     public TokenInfo createRefreshToken(UserEntity user) {
         TokenInfo refreshToken = jwtService.generateRefreshToken(user);
+        String hashedToken = TokenHashUtil.hashToken(refreshToken.getToken());
         RefreshTokenEntity refreshTokenEntity = RefreshTokenEntity.builder()
-                .token(refreshToken.getToken())
+                .hashedToken(hashedToken)
                 .expiresAt(Instant.ofEpochSecond(refreshToken.getExpiresAt()))
                 .user(user)
                 .build();
@@ -42,9 +43,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public UserEntity validateAndRetrieveUser(String refreshToken) {
-        RefreshTokenEntity refreshTokenEntity = refreshTokenRepository.findByTokenAndRevokedAtIsNullAndExpiresAtAfterNow(refreshToken)
+        String hashedToken = TokenHashUtil.hashToken(refreshToken);
+
+        RefreshTokenEntity refreshTokenEntity = refreshTokenRepository.findByTokenAndRevokedAtIsNullAndExpiresAtAfterNow(hashedToken)
                 .orElseThrow(() -> {
-                    log.error("Refresh token could not be found: {}", refreshToken);
+                    log.error("Refresh token could not be found");
                     return new UnauthorizedException("Invalid or expired refresh token");
                 });
         return refreshTokenEntity.getUser();
@@ -52,9 +55,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public void revokeRefreshToken(String refreshToken) {
-        RefreshTokenEntity refreshTokenEntity = refreshTokenRepository.findByTokenAndRevokedAtIsNullAndExpiresAtAfterNow(refreshToken)
+        String hashedToken = TokenHashUtil.hashToken(refreshToken);
+        RefreshTokenEntity refreshTokenEntity = refreshTokenRepository.findByTokenAndRevokedAtIsNullAndExpiresAtAfterNow(hashedToken)
                 .orElseThrow(() -> {
-                    log.error("Refresh token could not be found: {}", refreshToken);
+                    log.error("Refresh token could not be found");
                     return new UnauthorizedException("Invalid or expired refresh token");
                 });
 

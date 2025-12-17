@@ -36,7 +36,7 @@ public class AuthServiceImpl implements AuthService {
      * Register a new user account.
      *
      * @param registerAccountRequest the registration request containing user details
-     * @throws DuplicateResourceException the email or username is already exists
+     * @throws DuplicateResourceException the email or username already exists
      */
     @Override
     public void registerAccount(RegisterAccountRequest registerAccountRequest) {
@@ -96,17 +96,18 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public LoginResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
-        UserEntity userEntity = refreshTokenService.validateAndRetrieveUser(refreshTokenRequest.getRefreshToken());
+        String refreshToken = refreshTokenRequest.getRefreshToken();
+        UserEntity userEntity = refreshTokenService.validateAndRetrieveUser(refreshToken);
 
         // Invalidate the old refresh token
         refreshTokenService.revokeRefreshToken(refreshTokenRequest.getRefreshToken());
 
         TokenInfo accessToken = jwtService.generateAccessToken(userEntity);
-        TokenInfo refreshToken = refreshTokenService.createRefreshToken(userEntity);
+        TokenInfo refreshTokenInfo = refreshTokenService.createRefreshToken(userEntity);
 
         return LoginResponse.builder()
                 .accessToken(accessToken.getToken())
-                .refreshToken(refreshToken.getToken())
+                .refreshToken(refreshTokenInfo.getToken())
                 .expiresAt(accessToken.getExpiresAt())
                 .build();
     }

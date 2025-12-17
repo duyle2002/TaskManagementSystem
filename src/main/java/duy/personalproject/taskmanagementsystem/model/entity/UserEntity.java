@@ -37,7 +37,4 @@ public class UserEntity extends BaseEntity {
     @Column(name = "status", nullable = false)
     @Builder.Default
     private UserStatus userStatus = UserStatus.ACTIVE;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private Set<RefreshTokenEntity> refreshTokens;
 }

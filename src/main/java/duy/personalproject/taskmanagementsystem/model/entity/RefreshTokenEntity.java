@@ -14,8 +14,8 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RefreshTokenEntity extends BaseEntity {
-    @Column(name = "token", nullable = false, unique = true)
-    private String token;
+    @Column(name = "hashed_token", nullable = false, unique = true)
+    private String hashedToken;
 
     @Column(name = "expires_at", nullable = false)
     private Instant expiresAt;
