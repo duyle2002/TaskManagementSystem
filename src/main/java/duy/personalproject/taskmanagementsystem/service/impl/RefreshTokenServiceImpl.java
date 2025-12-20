@@ -31,10 +31,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     public TokenInfo createRefreshToken(UserEntity user) {
         TokenInfo refreshToken = jwtService.generateRefreshToken(user);
-        String hashedToken = TokenHashUtil.hashToken(refreshToken.getToken());
+        String hashedToken = TokenHashUtil.hashToken(refreshToken.token());
         RefreshTokenEntity refreshTokenEntity = RefreshTokenEntity.builder()
                 .hashedToken(hashedToken)
-                .expiresAt(Instant.ofEpochSecond(refreshToken.getExpiresAt()))
+                .expiresAt(Instant.ofEpochSecond(refreshToken.expiresAt()))
                 .user(user)
                 .build();
         refreshTokenRepository.save(refreshTokenEntity);
