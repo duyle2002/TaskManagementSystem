@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
-import static duy.personalproject.taskmanagementsystem.model.constant.TimeConstant.DAY_IN_MILLISECONDS;
+import static duy.personalproject.taskmanagementsystem.model.constant.TimeConstants.DAY_IN_MILLISECONDS;
 
 @Service
 @RequiredArgsConstructor

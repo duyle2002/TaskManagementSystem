@@ -1,6 +1,6 @@
 package duy.personalproject.taskmanagementsystem.model.constant;
 
-public class TimeConstant {
+public class TimeConstants {
     public static final Long MILLISECONDS_IN_SECOND = 1000L;
     public static final Long SECONDS_IN_MINUTE = 60L;
     public static final Long MINUTES_IN_HOUR = 60L;

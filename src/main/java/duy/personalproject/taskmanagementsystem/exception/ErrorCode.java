@@ -32,6 +32,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(404, "USER_NOT_FOUND", "User not found"),
     TASK_NOT_FOUND(404, "TASK_NOT_FOUND", "Task not found"),
     ENDPOINT_NOT_FOUND(404, "ENDPOINT_NOT_FOUND", "Endpoint not found"),
+    PROJECT_NOT_FOUND(404, "PROJECT_NOT_FOUND", "Project not found"),
 
     // 409 Conflict Errors
     DUPLICATE_RESOURCE(409, "DUPLICATE_RESOURCE", "Resource already exists"),

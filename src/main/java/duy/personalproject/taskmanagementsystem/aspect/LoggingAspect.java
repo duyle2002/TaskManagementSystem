@@ -84,16 +84,9 @@ public class LoggingAspect {
         String message = buildLogMessage(className, methodName, executionTime);
 
         switch (annotation.value()) {
-            case DEBUG:
-                log.debug(message);
-                break;
-            case WARN:
-                log.warn(message);
-                break;
-            case INFO:
-            default:
-                log.info(message);
-                break;
+            case DEBUG -> log.debug(message);
+            case INFO -> log.info(message);
+            case WARN -> log.warn(message);
         }
     }
 
@@ -101,9 +94,7 @@ public class LoggingAspect {
      * Builds the log message based on annotation configuration.
      */
     private String buildLogMessage(String className, String methodName, long executionTime) {
-        return "[" + className + "] " +
-                methodName + "()" +
-                " executed in " + executionTime + "ms";
+        return "[%s] %s() executed in %d ms".formatted(className, methodName, executionTime);
     }
 }
 

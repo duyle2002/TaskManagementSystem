@@ -1,14 +1,8 @@
 package duy.personalproject.taskmanagementsystem.model.request.auth;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class RefreshTokenRequest {
+public record RefreshTokenRequest(
     @NotBlank
-    private String refreshToken;
-}
+    String refreshToken
+) {}

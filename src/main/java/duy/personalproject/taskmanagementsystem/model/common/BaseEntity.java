@@ -2,8 +2,9 @@ package duy.personalproject.taskmanagementsystem.model.common;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -14,9 +15,8 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
     /**
@@ -31,7 +31,7 @@ public abstract class BaseEntity {
      * Timestamp when the entity was created.
      * Automatically set by the database.
      */
-    @CreationTimestamp
+    @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -39,7 +39,7 @@ public abstract class BaseEntity {
      * Timestamp when the entity was last updated.
      * Automatically updated by the database.
      */
-    @UpdateTimestamp
+    @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
