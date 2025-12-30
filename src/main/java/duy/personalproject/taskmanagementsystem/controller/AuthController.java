@@ -51,7 +51,7 @@ public class AuthController {
         log.info("Received request to register account for user {}", registerAccountRequest.getUsername());
         authService.registerAccount(registerAccountRequest);
         return ResponseEntity.ok(
-                ApiResponse.okWithMessage("Account registered successfully")
+                ApiResponse.okWithMessage("User registered successfully")
         );
     }
 

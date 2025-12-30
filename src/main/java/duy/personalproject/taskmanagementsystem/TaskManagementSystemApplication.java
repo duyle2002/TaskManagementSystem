@@ -7,12 +7,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableConfigurationProperties({JwtConfigProperties.class, RefreshTokenConfigProperties.class})
 @EnableScheduling
+@EnableJpaAuditing
+@EnableTransactionManagement
 public class TaskManagementSystemApplication {
 
     public static void main(String[] args) {

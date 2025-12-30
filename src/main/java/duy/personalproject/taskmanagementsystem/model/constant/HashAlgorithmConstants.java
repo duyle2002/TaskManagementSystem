@@ -1,7 +1,7 @@
 package duy.personalproject.taskmanagementsystem.model.constant;
 
-public class HashAlgorithmConstant {
-    private HashAlgorithmConstant() {}
+public class HashAlgorithmConstants {
+    private HashAlgorithmConstants() {}
 
     public static final String SHA256 = "SHA-256";
 }

@@ -6,6 +6,7 @@ import duy.personalproject.taskmanagementsystem.model.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Table(name = "users")
@@ -37,4 +38,7 @@ public class UserEntity extends BaseEntity {
     @Column(name = "status", nullable = false)
     @Builder.Default
     private UserStatus userStatus = UserStatus.ACTIVE;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<ProjectMemberEntity> projectMembers = new HashSet<>();
 }

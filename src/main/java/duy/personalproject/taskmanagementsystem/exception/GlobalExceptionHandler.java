@@ -5,6 +5,8 @@ import duy.personalproject.taskmanagementsystem.model.common.ErrorDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -173,6 +175,36 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = BadCredentialsException.class)
+    public ResponseEntity<ApiResponse<Void>> handleBadCredentialsException(
+            BadCredentialsException e, WebRequest request) {
+        log.warn("Authentication failed: {}", e.getMessage());
+
+        ErrorCode errorCode = ErrorCode.INVALID_CREDENTIALS;
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .success(false)
+                .code(401)
+                .message(errorCode.getMessage())
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(value = AuthorizationDeniedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAuthorizationDeniedException(
+            AuthorizationDeniedException e, WebRequest request) {
+        log.warn("Authorization denied: {}", e.getMessage());
+
+        ErrorCode errorCode = ErrorCode.INSUFFICIENT_PERMISSIONS;
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .success(false)
+                .code(403)
+                .message(errorCode.getMessage())
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
     /**
