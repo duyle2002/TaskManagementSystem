@@ -96,9 +96,9 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public void delete(UUID projectId, UUID userId) {
-        ProjectEntity projectEntity = validateProjectIdAndOwner(projectId, userId);
+        validateProjectIdAndOwner(projectId, userId);
 
-        projectRepository.delete(projectEntity);
+        projectRepository.softDeleteById(projectId);
     }
 
 

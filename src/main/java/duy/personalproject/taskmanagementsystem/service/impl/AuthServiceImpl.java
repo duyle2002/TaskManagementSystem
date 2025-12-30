@@ -1,7 +1,7 @@
 package duy.personalproject.taskmanagementsystem.service.impl;
 
 import duy.personalproject.taskmanagementsystem.exception.DuplicateResourceException;
-import duy.personalproject.taskmanagementsystem.mapper.IUserMapper;
+import duy.personalproject.taskmanagementsystem.mapper.UserMapper;
 import duy.personalproject.taskmanagementsystem.model.entity.UserEntity;
 import duy.personalproject.taskmanagementsystem.model.request.auth.LoginRequest;
 import duy.personalproject.taskmanagementsystem.model.request.auth.RefreshTokenRequest;
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 @Slf4j(topic = "AUTH_SERVICE")
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
-    private final IUserMapper userMapper;
+    private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -80,9 +80,9 @@ public class AuthServiceImpl implements AuthService {
         TokenInfo refreshToken = refreshTokenService.createRefreshToken(userEntity);
 
         return LoginResponse.builder()
-                .accessToken(accessToken.getToken())
-                .refreshToken(refreshToken.getToken())
-                .expiresAt(accessToken.getExpiresAt())
+                .accessToken(accessToken.token())
+                .refreshToken(refreshToken.token())
+                .expiresAt(accessToken.expiresAt())
                 .build();
     }
 
@@ -96,19 +96,19 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public LoginResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
-        String refreshToken = refreshTokenRequest.getRefreshToken();
+        String refreshToken = refreshTokenRequest.refreshToken();
         UserEntity userEntity = refreshTokenService.validateAndRetrieveUser(refreshToken);
 
         // Invalidate the old refresh token
-        refreshTokenService.revokeRefreshToken(refreshTokenRequest.getRefreshToken());
+        refreshTokenService.revokeRefreshToken(refreshTokenRequest.refreshToken());
 
         TokenInfo accessToken = jwtService.generateAccessToken(userEntity);
         TokenInfo refreshTokenInfo = refreshTokenService.createRefreshToken(userEntity);
 
         return LoginResponse.builder()
-                .accessToken(accessToken.getToken())
-                .refreshToken(refreshTokenInfo.getToken())
-                .expiresAt(accessToken.getExpiresAt())
+                .accessToken(accessToken.token())
+                .refreshToken(refreshTokenInfo.token())
+                .expiresAt(accessToken.expiresAt())
                 .build();
     }
 }
